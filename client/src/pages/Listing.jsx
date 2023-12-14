@@ -5,7 +5,7 @@ import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
 import { useSelector } from 'react-redux';
 import "swiper/css/bundle";
-// import Contact from '../components/Contact';
+import Contact from '../components/Contact';
 import {
     FaBath,
     FaBed,
@@ -132,7 +132,7 @@ const Listing = () => {
                 Contact landlord
               </button>
             )}
-            {/* {contact && <Contact listing={listing} />} */}
+            {contact && <Contact listing={listing} />}
           </div>
         </>
       )}
