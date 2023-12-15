@@ -15,6 +15,8 @@ const Search = () => {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [showMore,setShowMore]=useState(false);
+
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFormUrl = urlParams.get("searchTerm");
@@ -50,11 +52,17 @@ const Search = () => {
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
+      if(data.length>8){
+        showMore(true);
+      }else{
+        setShowMore(false)
+      }
       setListings(data);
       setLoading(false);
-      console.log(listings)
+      
     };
     fechListing();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]);
 
   const handleChange = (e) => {
@@ -102,6 +110,20 @@ const Search = () => {
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
+
+  const onShowMoreClick=async()=>{
+    const numberOfListings=listings.length;
+    const startIndex=numberOfListings;
+    const urlParams=new URLSearchParams(location.search);
+    urlParams.set('startIndex',startIndex);
+    const searchQuery=urlParams.toString();
+    const res=await fetch(`/api/listing/get?${searchQuery}`);
+    const data=await res.json();
+    if(data.length<9){
+      setShowMore(false)
+    }
+    setListings([...listings,...data])
+  }
   return (
     <div className="flex flex-col md:flex-row">
       <div className=" p-7 border-b-2 md:border-r-2 md:min-h-screen">
@@ -216,7 +238,7 @@ const Search = () => {
       </div>
       <div className="flex-1">
         <h1 className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5">
-          Listing results:
+          Listing results:</h1>
           <div className="p-7 flex flex-wrap gap-4">
             {!loading && listings.length ===0 &&(
               <p className="text-xl text-slate-700">No listing found!</p>
@@ -225,8 +247,14 @@ const Search = () => {
               <p className="text-xl text-slate-700 text-center w-full">Loading...</p>
             )}
             {!loading && listings &&listings.map((listing)=><ListingItem key={listing._id} listing={listing}/>)}
+              {showMore && (
+                <button onClick={onShowMoreClick}
+                className="text-green-700 hover:underline p-7 text-center w-full"
+                >
+                  show more
+                </button>
+              )}
           </div>
-        </h1>
       </div>
     </div>
   );

@@ -4,6 +4,6 @@ export default {
   theme: {
     extend: {},
   },
-  // eslint-disable-next-line no-undef
-  plugins: [require("@tailwindcss/line-clamp")],
+ 
+  // plugins: [require("@tailwindcss/line-clamp")],
 };
